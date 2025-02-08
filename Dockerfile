@@ -5,11 +5,7 @@ FROM python:3.11
 WORKDIR /app
 
 # Copy necessary files
-COPY requirements.txt .
-COPY resume.py .
-COPY .env .
-COPY extract.py .
-COPY v2.py .
+COPY . /app
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
