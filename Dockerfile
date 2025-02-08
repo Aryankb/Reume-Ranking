@@ -8,9 +8,8 @@ WORKDIR /app
 COPY requirements.txt .
 COPY resume.py .
 COPY .env .
-COPY extract .
-COPY resume .
-COPY v2 .
+COPY extract.py .
+COPY v2.py .
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
