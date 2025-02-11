@@ -39,8 +39,8 @@ def extract_text_from_pdf(pdf_path):
     return extracted_text
 
 if __name__=="__main__":
-# Example Usage
-    pdf_path = "/home/aryan/resume/EXTRAS/shreyanshResume.pdf"  # Replace with the path to your PDF file
+    # Example Usage
+    pdf_path = "/home/aryan/Resume-2/Resumes/Vandit_tyagi_resume_latest1.pdf"  # Replace with the path to your PDF file
     extracted_text = extract_text_from_pdf(pdf_path)
     print(extracted_text)
 

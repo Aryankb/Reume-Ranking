@@ -19,18 +19,15 @@ from pyresparser import ResumeParser
 import os
 import google.generativeai as genai
 from extract import extract_text_from_pdf
-# from sentence_transformers import SentenceTransformer
-# model = SentenceTransformer("BAAI/bge-m3")
-#BAAI/bge-m3 
 from v2 import get_jd_details, get_resume_details,match
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
-# # Extract the embedding vector
-# embedding_vector = embedding['embedding']
+import ollama
+
 client = chromadb.Client()
 collection_name = "resume_collection"
 API_KEY ="AIzaSyBxtMRRQPVj6ViJqWl_SfcLuIP0-cwtCTQ"
 genai.configure(api_key=API_KEY)
-# model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+
         
 
 # client.delete_collection(name=collection_name)
@@ -89,16 +86,6 @@ if st.session_state.skills:
                 model="models/text-embedding-004",
                 content=combined_text
             )
-        #             embedding = ollama.embeddings(
-        #     model='nomic-embed-text', 
-        #     prompt=combined_text
-        # )
-
-        # Extract the embedding vector
-                    # embedding_vector = embedding['embedding']
-                    # if not embedding_vector:
-                    #     continue
-                    # embedding = model.encode(combined_text).tolist()  # Generate combined embedding
                     metas={"name":filename}
                     if data["experience"]:
                         metas["experience"]="\n".join(data["experience"])
@@ -124,17 +111,12 @@ if st.session_state.skills:
                 
             # Step 2: Combine user query with their needs
             user_query = extract_text_from_pdf("/home/aryan/resume/sidebar/job_description.pdf")
-        #     embedding_query = ollama.embeddings(
-        #     model='nomic-embed-text', 
-        #     prompt=user_query
-        # )
+     
             query_google = genai.embed_content(
                 model="models/text-embedding-004",
                 content=user_query
             )
-        # Extract the embedding vector
-            # embedding_query = embedding_query['embedding']
-            # query_embedding = model.encode(user_query).tolist()  # Generate embedding for the query
+      
             
             # Step 3: Perform semantic search in ChromaDB
             results = collection.query(
@@ -329,7 +311,17 @@ if st.session_state.skills:
                 HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
                 HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
 
-            })
+            },generation_config={"temperature": 1})
+                
+                # response = ollama.chat(
+                #     model='deepseek-r1:8b',  # Change this to your preferred model
+                #     messages=[
+                #         {"role": "system", "content": bp},
+                #         {"role": "user", "content":f"\nJOB DESCRIPTION :-\n{jd_text}\n\nRESUME :-{res_text}"}
+                #     ]
+                # )
+
+                # print(response['message']['content'])  # Print the model's response
 
                 print(response.text)
                 
@@ -339,7 +331,8 @@ if st.session_state.skills:
                 for key in jsoni:
                     final_score+=jsoni[key]["score"]
 
-                st.write("Final Score:",final_score)
+                st.write("Final Score gemini:",final_score)
+                st.write("Final Score ollama:")
 
 
 
